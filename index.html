@@ -64,6 +64,21 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen transition-colors duration-500 pb-24">
     <div id="root" class="max-w-md mx-auto min-h-screen shadow-xl bg-slate-50 overflow-hidden relative"></div>
-    <script type="text/babel" data-type="module" src="app.jsx"></script>
+    <script>
+      // Manually fetch and compile app.jsx with classic JSX runtime
+      // Babel standalone's auto-processing defaults to automatic runtime which
+      // generates imports that browsers can't resolve
+      fetch('app.jsx')
+        .then(r => r.text())
+        .then(code => {
+          const result = Babel.transform(code, {
+            presets: [['react', { runtime: 'classic' }]]
+          });
+          const script = document.createElement('script');
+          script.textContent = result.code;
+          document.body.appendChild(script);
+        })
+        .catch(err => console.error('Failed to load app:', err));
+    </script>
 </body>
 </html>
